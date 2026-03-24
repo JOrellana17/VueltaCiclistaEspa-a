@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Mi
 
 class PreventRequestsDuringMaintenance extends Middleware
 {
-    /* comentario en espanol */
+    /* URIs accesibles incluso cuando la aplicacion esta en modo mantenimiento */
     protected $except = [
         //
     ];

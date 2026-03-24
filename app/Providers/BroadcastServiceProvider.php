@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 
 class BroadcastServiceProvider extends ServiceProvider
 {
-    /* comentario en espanol */
+    /* Registra las rutas y canales de difusion de eventos */
     public function boot(): void
     {
         Broadcast::routes();

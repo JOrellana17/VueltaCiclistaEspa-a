@@ -6,13 +6,13 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /* comentario en espanol */
+    /* Registra los servicios de la aplicacion en el contenedor */
     public function register(): void
     {
         //
     }
 
-    /* comentario en espanol */
+    /* Inicializa los servicios tras registrar todos los proveedores */
     public function boot(): void
     {
         //

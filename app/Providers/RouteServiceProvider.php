@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /* comentario en espanol */
+    /* Ruta de redireccion por defecto tras autenticarse */
     public const HOME = '/home';
 
-    /* comentario en espanol */
+    /* Configura los limitadores de peticiones y carga los archivos de rutas */
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {

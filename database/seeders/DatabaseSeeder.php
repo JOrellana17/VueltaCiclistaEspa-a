@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /* comentario en espanol */
+    /* Ejecuta los seeders para poblar la base de datos con datos iniciales */
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();

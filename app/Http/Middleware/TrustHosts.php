@@ -6,7 +6,7 @@ use Illuminate\Http\Middleware\TrustHosts as Middleware;
 
 class TrustHosts extends Middleware
 {
-    /* comentario en espanol */
+    /* Devuelve la lista de hosts de confianza para la aplicacion */
     public function hosts(): array
     {
         return [

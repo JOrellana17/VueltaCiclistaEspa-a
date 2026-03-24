@@ -10,14 +10,14 @@ use Illuminate\Validation\Rule;
 
 class ParticipaController extends Controller
 {
-    /* comentario en espanol */
+    /* Muestra el listado de participaciones de equipos en pruebas */
     public function index()
     {
         $listaParticipas = Participa::with(['equipo', 'prueba'])->latest('id_participa')->get();
         return view('participa.index')->with('participas', $listaParticipas);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para registrar una nueva participacion */
     public function create()
     {
         $equipos = Equipo::where('estado', 'activo')->orderBy('nombre')->get();
@@ -26,7 +26,7 @@ class ParticipaController extends Controller
         return view('participa.create', compact('equipos', 'pruebas'));
     }
 
-    /* comentario en espanol */
+    /* Valida y guarda una nueva participacion en la base de datos */
     public function store(Request $request)
     {
         $request->validate([
@@ -54,7 +54,7 @@ class ParticipaController extends Controller
         return redirect()->route('participa.index')->with('success', 'Participacion creada correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Muestra el detalle de una participacion especifica */
     public function show(string $id)
     {
         $participa = Participa::with(['equipo', 'prueba'])->find($id);
@@ -66,7 +66,7 @@ class ParticipaController extends Controller
         return view('participa.show')->with('participa', $participa);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para editar una participacion existente */
     public function edit(string $id)
     {
         $participa = Participa::find($id);
@@ -86,7 +86,7 @@ class ParticipaController extends Controller
         return view('participa.edit', compact('participa', 'equipos', 'pruebas'));
     }
 
-    /* comentario en espanol */
+    /* Valida y actualiza los datos de una participacion existente */
     public function update(Request $request, string $id)
     {
         $participa = Participa::find($id);
@@ -127,7 +127,7 @@ class ParticipaController extends Controller
         return redirect()->route('participa.index')->with('success', 'Participacion actualizada correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Marca una participacion como inactiva en la base de datos */
     public function destroy(string $id)
     {
         $participa = Participa::find($id);
@@ -142,7 +142,7 @@ class ParticipaController extends Controller
         return redirect()->route('participa.index')->with('success', 'Participacion inhabilitada correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Activa o desactiva el estado de una participacion */
     public function toggleEstado(string $id)
     {
         $participa = Participa::find($id);

@@ -55,7 +55,7 @@
         <div class="section-toolbar">
             <div>
                 <h2>Integrantes del equipo</h2>
-                <p>Listado de ciclistas asignados actualmente a esta escuadra.</p>
+                <p>Listado de ciclistas asignados actualmente a este equipo.</p>
             </div>
         </div>
 

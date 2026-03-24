@@ -6,7 +6,7 @@ use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
 
 class ValidateSignature extends Middleware
 {
-    /* comentario en espanol */
+    /* Parametros de consulta que se ignoran al validar la firma de una URL */
     protected $except = [
         // 'fbclid',
         // 'utm_campaign',

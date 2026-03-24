@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class GanadorController extends Controller
 {
-    /* comentario en espanol */
+    /* Muestra el listado de ganadores registrados por prueba */
     public function index()
     {
         $ganadores = Ganador::with(['prueba', 'equipo', 'ciclista'])
@@ -21,7 +21,7 @@ class GanadorController extends Controller
         return view('ganador.index', compact('ganadores'));
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para registrar al ganador de una prueba */
     public function create(Request $request)
     {
         $pruebas = Prueba::where('estado', 'activo')->orderByDesc('anio_edicion')->get();
@@ -32,7 +32,7 @@ class GanadorController extends Controller
         return view('ganador.create', compact('pruebas', 'equipos', 'ciclistas', 'selectedPrueba'));
     }
 
-    /* comentario en espanol */
+    /* Valida y guarda o actualiza el ganador de una prueba ciclista */
     public function store(Request $request)
     {
         $request->validate([

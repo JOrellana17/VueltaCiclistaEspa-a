@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
 class TrimStrings extends Middleware
 {
-    /* comentario en espanol */
+    /* Campos de la solicitud que no deben recortarse automaticamente */
     protected $except = [
         'current_password',
         'password',

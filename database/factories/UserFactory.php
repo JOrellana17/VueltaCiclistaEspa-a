@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/* comentario en espanol */
+/* Fabrica para generar datos de prueba del modelo User */
 class UserFactory extends Factory
 {
-    /* comentario en espanol */
+    /* Contrasena generada y reutilizada durante la sesion de factory */
     protected static ?string $password;
 
-    /* comentario en espanol */
+    /* Define los valores por defecto para los atributos del modelo */
     public function definition(): array
     {
         return [
@@ -24,7 +24,7 @@ class UserFactory extends Factory
         ];
     }
 
-    /* comentario en espanol */
+    /* Devuelve el estado con el correo electronico sin verificar */
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [

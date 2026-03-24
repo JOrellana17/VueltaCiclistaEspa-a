@@ -10,14 +10,14 @@ use Illuminate\Validation\Rule;
 
 class CiclistaController extends Controller
 {
-    /* comentario en espanol */
+    /* Muestra el listado completo de ciclistas con su equipo y nacionalidad */
     public function index()
     {
         $listaCiclistas = Ciclista::with(['equipo', 'nacionalidad'])->orderBy('nombre')->get();
         return view('ciclista.index')->with('ciclistas', $listaCiclistas);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para registrar un nuevo ciclista */
     public function create()
     {
         $equipos = Equipo::where('estado', 'activo')->orderBy('nombre')->get();
@@ -26,7 +26,7 @@ class CiclistaController extends Controller
         return view('ciclista.create', compact('equipos', 'nacionalidades'));
     }
 
-    /* comentario en espanol */
+    /* Valida y guarda un nuevo ciclista en la base de datos */
     public function store(Request $request)
     {
         $request->validate([
@@ -57,7 +57,7 @@ class CiclistaController extends Controller
         return redirect()->route('ciclista.index')->with('success', 'Ciclista creado correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Muestra el detalle de un ciclista especifico */
     public function show(string $id)
     {
         $ciclista = Ciclista::with(['equipo', 'nacionalidad'])->find($id);
@@ -69,7 +69,7 @@ class CiclistaController extends Controller
         return view('ciclista.show')->with('ciclista', $ciclista);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para editar un ciclista existente */
     public function edit(string $id)
     {
         $ciclista = Ciclista::find($id);
@@ -86,7 +86,7 @@ class CiclistaController extends Controller
         return view('ciclista.edit', compact('ciclista', 'equipos', 'nacionalidades'));
     }
 
-    /* comentario en espanol */
+    /* Valida y actualiza los datos de un ciclista existente */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -122,7 +122,7 @@ class CiclistaController extends Controller
         return redirect()->route('ciclista.index')->with('success', 'Ciclista actualizado correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Marca un ciclista como inactivo en la base de datos */
     public function destroy(string $id)
     {
         $eliminado = Ciclista::find($id);

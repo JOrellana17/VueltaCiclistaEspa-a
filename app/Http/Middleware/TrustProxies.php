@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class TrustProxies extends Middleware
 {
-    /* comentario en espanol */
+    /* Proxies de confianza para esta aplicacion */
     protected $proxies;
 
-    /* comentario en espanol */
+    /* Cabeceras usadas para detectar proxies y obtener informacion real del cliente */
     protected $headers =
         Request::HEADER_X_FORWARDED_FOR |
         Request::HEADER_X_FORWARDED_HOST |

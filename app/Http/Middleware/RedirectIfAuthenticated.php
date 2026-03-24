@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
-    /* comentario en espanol */
+    /* Redirige al usuario ya autenticado a la pagina principal */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
         $guards = empty($guards) ? [null] : $guards;

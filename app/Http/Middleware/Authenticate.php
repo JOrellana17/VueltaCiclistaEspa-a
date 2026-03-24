@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class Authenticate extends Middleware
 {
-    /* comentario en espanol */
+    /* Redirige al usuario no autenticado a la pagina de inicio de sesion */
     protected function redirectTo(Request $request): ?string
     {
         return $request->expectsJson() ? null : route('login');

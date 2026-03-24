@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /* comentario en espanol */
+    /* Verifica que la pagina principal devuelve una respuesta exitosa */
     public function test_the_application_returns_a_successful_response(): void
     {
         $response = $this->get('/');

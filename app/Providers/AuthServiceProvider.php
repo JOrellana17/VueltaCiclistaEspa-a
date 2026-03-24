@@ -7,12 +7,12 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /* comentario en espanol */
+    /* Mapeo entre modelos y sus politicas de autorizacion */
     protected $policies = [
         //
     ];
 
-    /* comentario en espanol */
+    /* Registra los servicios de autenticacion y autorizacion */
     public function boot(): void
     {
         //

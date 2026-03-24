@@ -7,20 +7,20 @@ use Illuminate\Http\Request;
 
 class PruebaController extends Controller
 {
-    /* comentario en espanol */
+    /* Muestra el listado completo de pruebas ciclistas */
     public function index()
     {
         $listaPruebas = Prueba::orderByDesc('anio_edicion')->get();
         return view('prueba.index')->with('pruebas', $listaPruebas);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para registrar una nueva prueba */
     public function create()
     {
         return view('prueba.create');
     }
 
-    /* comentario en espanol */
+    /* Valida y guarda una nueva prueba en la base de datos */
     public function store(Request $request)
     {
         $request->validate([
@@ -42,7 +42,7 @@ class PruebaController extends Controller
         return redirect()->route('prueba.index')->with('success', 'Prueba creada correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Muestra el detalle de una prueba especifica */
     public function show(string $id)
     {
         $prueba = Prueba::find($id);
@@ -54,7 +54,7 @@ class PruebaController extends Controller
         return view('prueba.show')->with('prueba', $prueba);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para editar una prueba existente */
     public function edit(string $id)
     {
         $prueba = Prueba::find($id);
@@ -66,7 +66,7 @@ class PruebaController extends Controller
         return view('prueba.edit', compact('prueba'));
     }
 
-    /* comentario en espanol */
+    /* Valida y actualiza los datos de una prueba existente */
     public function update(Request $request, string $id)
     {
         $prueba = Prueba::find($id);
@@ -93,7 +93,7 @@ class PruebaController extends Controller
         return redirect()->route('prueba.index')->with('success', 'Prueba actualizada correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Elimina una prueba de la base de datos */
     public function destroy(string $id)
     {
         $eliminado = Prueba::find($id);

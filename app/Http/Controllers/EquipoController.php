@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 
 class EquipoController extends Controller
 {
-    /* comentario en espanol */
+    /* Muestra el listado completo de equipos con su nacionalidad */
     public function index()
     {
         $listaEquipos = Equipo::with('nacionalidad')->orderBy('nombre')->get();
         return view('equipo.index')->with('equipos', $listaEquipos);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para registrar un nuevo equipo */
     public function create()
     {
         $nacionalidades = Nacionalidad::orderBy('nombre')->get();
@@ -23,7 +23,7 @@ class EquipoController extends Controller
         return view('equipo.create', compact('nacionalidades'));
     }
 
-    /* comentario en espanol */
+    /* Valida y guarda un nuevo equipo en la base de datos */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,7 +43,7 @@ class EquipoController extends Controller
         return redirect()->route('equipo.index')->with('success', 'Equipo creado correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Muestra el detalle de un equipo y sus ciclistas asignados */
     public function show(string $id)
     {
         $equipo = Equipo::with(['nacionalidad', 'ciclistas.nacionalidad'])->find($id);
@@ -55,7 +55,7 @@ class EquipoController extends Controller
         return view('equipo.show')->with('equipo', $equipo);
     }
 
-    /* comentario en espanol */
+    /* Carga el formulario para editar un equipo existente */
     public function edit(string $id)
     {
         $equipo = Equipo::find($id);
@@ -68,7 +68,7 @@ class EquipoController extends Controller
         return view('equipo.edit', compact('equipo', 'nacionalidades'));
     }
 
-    /* comentario en espanol */
+    /* Valida y actualiza los datos de un equipo existente */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -93,7 +93,7 @@ class EquipoController extends Controller
         return redirect()->route('equipo.index')->with('success', 'Equipo actualizado correctamente.');
     }
 
-    /* comentario en espanol */
+    /* Marca un equipo como inactivo en la base de datos */
     public function destroy(string $id)
     {
         $eliminado = Equipo::find($id);

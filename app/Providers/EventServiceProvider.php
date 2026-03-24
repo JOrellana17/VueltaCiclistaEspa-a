@@ -9,20 +9,20 @@ use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
-    /* comentario en espanol */
+    /* Mapeo entre eventos de la aplicacion y sus oyentes */
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
     ];
 
-    /* comentario en espanol */
+    /* Registra los eventos y oyentes de la aplicacion */
     public function boot(): void
     {
         //
     }
 
-    /* comentario en espanol */
+    /* Indica si los eventos deben descubrirse automaticamente */
     public function shouldDiscoverEvents(): bool
     {
         return false;

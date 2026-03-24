@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-    /* comentario en espanol */
+    /* Middlewares globales que se aplican a todas las solicitudes HTTP */
     protected $middleware = [
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
@@ -17,7 +17,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
-    /* comentario en espanol */
+    /* Grupos de middlewares asignados a las rutas web y a la API */
     protected $middlewareGroups = [
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
         ],
     ];
 
-    /* comentario en espanol */
+    /* Alias de middlewares para usar en las definiciones de rutas */
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
