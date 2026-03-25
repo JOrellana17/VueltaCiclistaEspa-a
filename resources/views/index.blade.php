@@ -38,11 +38,16 @@
             </a>
         @endif
 
-        @if ((int) session('tipo_usuario') === 0)
+        @if (in_array((int) session('tipo_usuario'), [0, 2], true))
             <a class="dashboard-card" href="{{ route('ganador.index') }}">
                 <span class="dashboard-tag">Ganadores</span>
-                <h2>Asignacion de ganador</h2>
-                <p>Elige prueba activa, equipo y ciclista del equipo para registrar al ganador oficial.</p>
+                @if ((int) session('tipo_usuario') === 0)
+                    <h2>Asignacion de ganador</h2>
+                    <p>Elige prueba activa, equipo y ciclista del equipo para registrar al ganador oficial.</p>
+                @else
+                    <h2>Consulta de ganadores</h2>
+                    <p>Visualiza los ganadores registrados por prueba en modo solo lectura.</p>
+                @endif
                 <span class="dashboard-link">Abrir modulo</span>
             </a>
         @endif

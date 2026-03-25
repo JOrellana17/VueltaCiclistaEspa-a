@@ -31,7 +31,7 @@
                     <a class="nav-chip {{ request()->routeIs('prueba.*') ? 'is-active' : '' }}" href="{{ route('prueba.index') }}">Pruebas</a>
                 @endif
 
-                @if ((int) session('tipo_usuario') === 0)
+                @if (in_array((int) session('tipo_usuario'), [0, 2], true))
                     <a class="nav-chip {{ request()->routeIs('ganador.*') ? 'is-active' : '' }}" href="{{ route('ganador.index') }}">Ganadores</a>
                 @endif
             </nav>

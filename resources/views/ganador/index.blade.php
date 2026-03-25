@@ -11,7 +11,9 @@
                 <h2>Ganadores registrados</h2>
                 <p>Consulta el ganador de cada prueba y actualizalo cuando sea necesario.</p>
             </div>
-            <a class="button-primary" href="{{ route('ganador.create') }}">Asignar ganador</a>
+            @if ((int) session('tipo_usuario') === 0)
+                <a class="button-primary" href="{{ route('ganador.create') }}">Asignar ganador</a>
+            @endif
         </div>
 
         <div class="table-wrap">
@@ -22,7 +24,9 @@
                         <th>Estado prueba</th>
                         <th>Ganador</th>
                         <th>Equipo</th>
-                        <th>Acciones</th>
+                        @if ((int) session('tipo_usuario') === 0)
+                            <th>Acciones</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -32,13 +36,15 @@
                             <td>{{ ucfirst($ganador->prueba?->estado ?? 'inactivo') }}</td>
                             <td>{{ $ganador->ciclista?->nombre ?? 'Sin asignar' }}</td>
                             <td>{{ $ganador->equipo?->nombre ?? 'Sin equipo' }}</td>
-                            <td>
-                                <a class="button-secondary" href="{{ route('ganador.create', ['id_prueba' => $ganador->id_prueba]) }}">Asignar/Actualizar</a>
-                            </td>
+                            @if ((int) session('tipo_usuario') === 0)
+                                <td>
+                                    <a class="button-secondary" href="{{ route('ganador.create', ['id_prueba' => $ganador->id_prueba]) }}">Asignar/Actualizar</a>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">
+                            <td colspan="{{ (int) session('tipo_usuario') === 0 ? 5 : 4 }}">
                                 <p class="empty-state">No hay pruebas disponibles para asignar ganadores.</p>
                             </td>
                         </tr>

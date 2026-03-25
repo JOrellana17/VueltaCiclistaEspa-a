@@ -50,9 +50,12 @@ Route::middleware('sesion')->group(function () {
         Route::patch('participa/{id}/estado', [ParticipaController::class, 'toggleEstado'])->name('participa.estado');
     });
 
-    /* Modulo de ganadores: exclusivo para el administrador */
-    Route::middleware('rol:0')->group(function () {
+    /* Modulo de ganadores: listado para admin y ciclista, escritura solo admin */
+    Route::middleware('rol:0,2')->group(function () {
         Route::get('ganador', [GanadorController::class, 'index'])->name('ganador.index');
+    });
+
+    Route::middleware('rol:0')->group(function () {
         Route::get('ganador/create', [GanadorController::class, 'create'])->name('ganador.create');
         Route::post('ganador', [GanadorController::class, 'store'])->name('ganador.store');
     });
