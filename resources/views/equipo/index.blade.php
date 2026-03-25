@@ -11,7 +11,9 @@
                 <h2>Listado de equipos</h2>
                 <p>Consulta todas las escuadras disponibles y actua sobre cada una desde la misma tabla.</p>
             </div>
-            <a class="button-primary" href="{{ route('equipo.create') }}">Nuevo equipo</a>
+            @if ((int) session('tipo_usuario') !== 2)
+                <a class="button-primary" href="{{ route('equipo.create') }}">Nuevo equipo</a>
+            @endif
         </div>
 
         <div class="table-wrap">
@@ -37,12 +39,14 @@
                             <td>
                                 <div class="action-row">
                                     <a class="button-link" href="{{ route('equipo.show', $equipo->id_equipo) }}">Ver</a>
-                                    <a class="button-secondary" href="{{ route('equipo.edit', $equipo->id_equipo) }}">Editar</a>
-                                    <form action="{{ route('equipo.destroy', $equipo->id_equipo) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="button-danger" type="submit" @disabled($equipo->estado === 'inactivo')>Inactivar</button>
-                                    </form>
+                                    @if ((int) session('tipo_usuario') !== 2)
+                                        <a class="button-secondary" href="{{ route('equipo.edit', $equipo->id_equipo) }}">Editar</a>
+                                        <form action="{{ route('equipo.destroy', $equipo->id_equipo) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="button-danger" type="submit" @disabled($equipo->estado === 'inactivo')>Inactivar</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

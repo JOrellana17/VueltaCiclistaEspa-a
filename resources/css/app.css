@@ -3,7 +3,7 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
-@source '../* comentario en espanol */*.js';
+@source '../js/*.js';
 
 @theme {
     --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
@@ -589,5 +589,189 @@ textarea {
 
     .table-wrap {
         border-radius: 1rem;
+    }
+}
+
+/* --- Login y control de acceso --- */
+
+.login-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.login-card {
+    width: min(440px, 100%);
+    padding: 2.5rem 2.5rem 2rem;
+    border: 1px solid var(--line);
+    border-radius: 1.75rem;
+    background: var(--surface-strong);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+}
+
+.login-title {
+    margin: 0 0 2rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 6vw, 3rem);
+    font-weight: 600;
+    color: var(--page-ink);
+    line-height: 1.1;
+}
+
+.login-field {
+    position: relative;
+    margin-bottom: 1.75rem;
+}
+
+.login-label {
+    display: block;
+    margin-bottom: 0.6rem;
+    color: var(--page-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.login-input {
+    width: 100%;
+    padding: 0.65rem 2.4rem 0.65rem 0;
+    border: none;
+    border-bottom: 2px solid rgba(102, 68, 50, 0.22);
+    border-radius: 0;
+    background: transparent;
+    color: var(--page-ink);
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 200ms ease;
+    box-sizing: border-box;
+}
+
+.login-input:focus {
+    border-bottom-color: var(--page-ink);
+}
+
+.login-icon {
+    position: absolute;
+    right: 0;
+    bottom: 0.65rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--page-muted);
+    pointer-events: none;
+}
+
+.login-eye {
+    position: absolute;
+    right: 0;
+    bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--page-muted);
+    cursor: pointer;
+    transition: color 200ms ease;
+}
+
+.login-eye:hover {
+    color: var(--page-ink);
+}
+
+.login-submit {
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 9999px;
+    background: var(--page-ink);
+    color: #fff9f5;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background 200ms ease, transform 150ms ease;
+}
+
+.login-submit:hover {
+    background: #3b2820;
+    transform: translateY(-1px);
+}
+
+.login-error {
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid rgba(142, 35, 48, 0.14);
+    border-radius: 1rem;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 0.92rem;
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}
+
+.header-user form {
+    margin: 0;
+}
+
+.user-badge {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid rgba(102, 68, 50, 0.14);
+    border-radius: 9999px;
+    background: rgba(255, 250, 245, 0.82);
+    color: var(--page-muted);
+    font-size: 0.88rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.btn-logout {
+    padding: 0.72rem 1.1rem;
+    border: 1px solid rgba(102, 68, 50, 0.14);
+    border-radius: 9999px;
+    background: rgba(255, 250, 245, 0.82);
+    color: var(--page-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.btn-logout:hover {
+    transform: translateY(-1px);
+    background: linear-gradient(135deg, var(--accent), #b84024);
+    color: #fff8f2;
+    border-color: transparent;
+}
+
+.acceso-denegado-section {
+    display: grid;
+    gap: 1.5rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    justify-items: center;
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 2rem 1.5rem 1.75rem;
+    }
+
+        .header-user {
+        width: 100%;
+        justify-content: flex-end;
     }
 }

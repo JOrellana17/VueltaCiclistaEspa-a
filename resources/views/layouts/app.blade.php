@@ -19,15 +19,30 @@
 
             <nav class="site-nav">
                 <a class="nav-chip {{ request()->path() === '/' ? 'is-active' : '' }}" href="{{ url('/') }}">Inicio</a>
-                <a class="nav-chip {{ request()->routeIs('ciclista.*') ? 'is-active' : '' }}" href="{{ route('ciclista.index') }}">Ciclistas</a>
+
+                @if ((int) session('tipo_usuario') !== 2)
+                    <a class="nav-chip {{ request()->routeIs('ciclista.*') ? 'is-active' : '' }}" href="{{ route('ciclista.index') }}">Ciclistas</a>
+                @endif
+
                 <a class="nav-chip {{ request()->routeIs('equipo.*') ? 'is-active' : '' }}" href="{{ route('equipo.index') }}">Equipos</a>
-                <a class="nav-chip {{ request()->routeIs('participa.*') ? 'is-active' : '' }}" href="{{ route('participa.index') }}">Participaciones</a>
-                <a class="nav-chip {{ request()->routeIs('prueba.*') ? 'is-active' : '' }}" href="{{ route('prueba.index') }}">Pruebas</a>
-                <a class="nav-chip {{ request()->routeIs('ganador.*') ? 'is-active' : '' }}" href="{{ route('ganador.index') }}">Ganadores</a>
-                @if (Route::has('participante.index'))
-                    <a class="nav-chip {{ request()->routeIs('participante.*') ? 'is-active' : '' }}" href="{{ route('participante.index') }}">Participantes</a>
+
+                @if ((int) session('tipo_usuario') !== 2)
+                    <a class="nav-chip {{ request()->routeIs('participa.*') ? 'is-active' : '' }}" href="{{ route('participa.index') }}">Participaciones</a>
+                    <a class="nav-chip {{ request()->routeIs('prueba.*') ? 'is-active' : '' }}" href="{{ route('prueba.index') }}">Pruebas</a>
+                @endif
+
+                @if ((int) session('tipo_usuario') === 0)
+                    <a class="nav-chip {{ request()->routeIs('ganador.*') ? 'is-active' : '' }}" href="{{ route('ganador.index') }}">Ganadores</a>
                 @endif
             </nav>
+
+            <div class="header-user">
+                <span class="user-badge">{{ session('usuario_nombre') }}</span>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="btn-logout" type="submit">Salir</button>
+                </form>
+            </div>
         </header>
 
         <main class="page-main">

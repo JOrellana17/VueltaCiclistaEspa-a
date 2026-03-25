@@ -6,12 +6,14 @@
 
 @section('content')
     <section class="dashboard-grid">
-        <a class="dashboard-card" href="{{ route('ciclista.index') }}">
-            <span class="dashboard-tag">Ciclistas</span>
-            <h2>Gestion del peloton</h2>
-            <p>Alta, consulta y mantenimiento de corredores con sus datos clave y referencias de equipo.</p>
-            <span class="dashboard-link">Abrir modulo</span>
-        </a>
+        @if ((int) session('tipo_usuario') !== 2)
+            <a class="dashboard-card" href="{{ route('ciclista.index') }}">
+                <span class="dashboard-tag">Ciclistas</span>
+                <h2>Gestion del peloton</h2>
+                <p>Alta, consulta y mantenimiento de corredores con sus datos clave y referencias de equipo.</p>
+                <span class="dashboard-link">Abrir modulo</span>
+            </a>
+        @endif
 
         <a class="dashboard-card" href="{{ route('equipo.index') }}">
             <span class="dashboard-tag">Equipos</span>
@@ -20,25 +22,29 @@
             <span class="dashboard-link">Abrir modulo</span>
         </a>
 
-        <a class="dashboard-card" href="{{ route('participa.index') }}">
-            <span class="dashboard-tag">Participaciones</span>
-            <h2>Inscripciones y participaciones</h2>
-            <p>Consulta altas por prueba y controla el rango temporal de cada participacion.</p>
-            <span class="dashboard-link">Abrir modulo</span>
-        </a>
+        @if ((int) session('tipo_usuario') !== 2)
+            <a class="dashboard-card" href="{{ route('participa.index') }}">
+                <span class="dashboard-tag">Participaciones</span>
+                <h2>Inscripciones y participaciones</h2>
+                <p>Consulta altas por prueba y controla el rango temporal de cada participacion.</p>
+                <span class="dashboard-link">Abrir modulo</span>
+            </a>
 
-        <a class="dashboard-card" href="{{ route('prueba.index') }}">
-            <span class="dashboard-tag">Pruebas</span>
-            <h2>Calendario de la competicion</h2>
-            <p>Gestiona ediciones, kilometraje total y resultados historicos desde una sola vista.</p>
-            <span class="dashboard-link">Abrir modulo</span>
-        </a>
+            <a class="dashboard-card" href="{{ route('prueba.index') }}">
+                <span class="dashboard-tag">Pruebas</span>
+                <h2>Calendario de la competicion</h2>
+                <p>Gestiona ediciones, kilometraje total y resultados historicos desde una sola vista.</p>
+                <span class="dashboard-link">Abrir modulo</span>
+            </a>
+        @endif
 
-        <a class="dashboard-card" href="{{ route('ganador.index') }}">
-            <span class="dashboard-tag">Ganadores</span>
-            <h2>Asignacion de ganador</h2>
-            <p>Elige prueba activa, equipo y ciclista del equipo para registrar al ganador oficial.</p>
-            <span class="dashboard-link">Abrir modulo</span>
-        </a>
+        @if ((int) session('tipo_usuario') === 0)
+            <a class="dashboard-card" href="{{ route('ganador.index') }}">
+                <span class="dashboard-tag">Ganadores</span>
+                <h2>Asignacion de ganador</h2>
+                <p>Elige prueba activa, equipo y ciclista del equipo para registrar al ganador oficial.</p>
+                <span class="dashboard-link">Abrir modulo</span>
+            </a>
+        @endif
     </section>
 @endsection

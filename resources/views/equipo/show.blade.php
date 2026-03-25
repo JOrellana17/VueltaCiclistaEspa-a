@@ -39,15 +39,19 @@
             </div>
 
             <div class="form-actions">
-                <a class="button-primary" href="{{ route('equipo.edit', $equipo->id_equipo) }}">Editar equipo</a>
+                @if ((int) session('tipo_usuario') !== 2)
+                    <a class="button-primary" href="{{ route('equipo.edit', $equipo->id_equipo) }}">Editar equipo</a>
+                @endif
                 <a class="button-secondary" href="{{ route('equipo.index') }}">Volver al listado</a>
             </div>
 
-            <form action="{{ route('equipo.destroy', $equipo->id_equipo) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button class="button-danger" type="submit" @disabled($equipo->estado === 'inactivo')>Inactivar registro</button>
-            </form>
+            @if ((int) session('tipo_usuario') !== 2)
+                <form action="{{ route('equipo.destroy', $equipo->id_equipo) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button class="button-danger" type="submit" @disabled($equipo->estado === 'inactivo')>Inactivar registro</button>
+                </form>
+            @endif
         </aside>
     </section>
 

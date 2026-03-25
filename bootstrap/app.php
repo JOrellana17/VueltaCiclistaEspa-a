@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        /* Registra los alias de middleware personalizados para sesion y roles */
+        $middleware->alias([
+            'sesion' => \App\Http\Middleware\VerificarSesion::class,
+            'rol'    => \App\Http\Middleware\VerificarRol::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

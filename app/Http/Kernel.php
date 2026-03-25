@@ -37,6 +37,8 @@ class Kernel extends HttpKernel
 
     /* Alias de middlewares para usar en las definiciones de rutas */
     protected $middlewareAliases = [
+        'sesion' => \App\Http\Middleware\VerificarSesion::class,
+        'rol'    => \App\Http\Middleware\VerificarRol::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
