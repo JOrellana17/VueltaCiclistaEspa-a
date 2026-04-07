@@ -6,7 +6,7 @@
 
 @section('content')
     <section class="dashboard-grid">
-        @if ((int) session('tipo_usuario') !== 2)
+        @if (in_array((int) session('tipo_usuario'), [0, 1], true))
             <a class="dashboard-card" href="{{ route('ciclista.index') }}">
                 <span class="dashboard-tag">Ciclistas</span>
                 <h2>Gestion del peloton</h2>
@@ -15,14 +15,16 @@
             </a>
         @endif
 
-        <a class="dashboard-card" href="{{ route('equipo.index') }}">
-            <span class="dashboard-tag">Equipos</span>
-            <h2>Estructura deportiva</h2>
-            <p>Centraliza directores, nacionalidades y composicion general de cada escuadra.</p>
-            <span class="dashboard-link">Abrir modulo</span>
-        </a>
+        @if ((int) session('tipo_usuario') !== 3)
+            <a class="dashboard-card" href="{{ route('equipo.index') }}">
+                <span class="dashboard-tag">Equipos</span>
+                <h2>Estructura deportiva</h2>
+                <p>Centraliza directores, nacionalidades y composicion general de cada escuadra.</p>
+                <span class="dashboard-link">Abrir modulo</span>
+            </a>
+        @endif
 
-        @if ((int) session('tipo_usuario') !== 2)
+        @if (in_array((int) session('tipo_usuario'), [0, 1], true))
             <a class="dashboard-card" href="{{ route('participa.index') }}">
                 <span class="dashboard-tag">Participaciones</span>
                 <h2>Inscripciones y participaciones</h2>
@@ -49,6 +51,15 @@
                     <p>Visualiza los ganadores registrados por prueba en modo solo lectura.</p>
                 @endif
                 <span class="dashboard-link">Abrir modulo</span>
+            </a>
+        @endif
+
+        @if ((int) session('tipo_usuario') === 3)
+            <a class="dashboard-card" href="{{ route('usuario.mis-pruebas') }}">
+                <span class="dashboard-tag">Mis pruebas</span>
+                <h2>Mis pruebas y resultados</h2>
+                <p>Consulta las pruebas en las que ha participado tu equipo y si eres ganador en alguna.</p>
+                <span class="dashboard-link">Ver mis pruebas</span>
             </a>
         @endif
     </section>

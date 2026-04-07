@@ -86,6 +86,17 @@
             </div>
 
             <div class="field field-full">
+                <label for="password">Contrasena de acceso al sistema</label>
+                <input class="input-control" id="password" type="password" name="password" minlength="8" required autocomplete="new-password">
+                <small style="color:var(--page-muted);font-size:0.8rem;">Minimo 8 caracteres. El usuario de acceso se genera automaticamente a partir del nombre e ID del ciclista.</small>
+            </div>
+
+            <div class="field field-full">
+                <label for="password_confirmation">Confirmar contrasena</label>
+                <input class="input-control" id="password_confirmation" type="password" name="password_confirmation" minlength="8" required autocomplete="new-password">
+            </div>
+
+            <div class="field field-full">
                 <div class="form-actions">
                     <a class="button-secondary" href="{{ route('ciclista.index') }}">Cancelar</a>
                     <button class="button-primary" type="submit" @disabled($equipos->isEmpty() || $nacionalidades->isEmpty())>Guardar ciclista</button>

@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Ciclista;
 use App\Models\Equipo;
 use App\Models\Nacionalidad;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class CiclistaController extends Controller
@@ -22,11 +26,10 @@ class CiclistaController extends Controller
     {
         $equipos = Equipo::where('estado', 'activo')->orderBy('nombre')->get();
         $nacionalidades = Nacionalidad::orderBy('nombre')->get();
-
         return view('ciclista.create', compact('equipos', 'nacionalidades'));
     }
 
-    /* Valida y guarda un nuevo ciclista en la base de datos */
+    /* Valida y guarda un nuevo ciclista en la base de datos junto con su usuario de acceso */
     public function store(Request $request)
     {
         $request->validate([
@@ -41,20 +44,35 @@ class CiclistaController extends Controller
             'fecha_fin_contrato' => 'required|date|after_or_equal:fecha_inicio_contrato',
             'estado_contrato' => 'required|in:activo,inactivo',
             'estado' => 'required|in:activo,inactivo',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $ciclista = new Ciclista();
-        $ciclista->id_equipo = $request->id_equipo;
-        $ciclista->id_nacionalidad = $request->id_nacionalidad;
-        $ciclista->nombre = $request->nombre;
-        $ciclista->fecha_nacimiento = $request->fecha_nacimiento;
-        $ciclista->fecha_inicio_contrato = $request->fecha_inicio_contrato;
-        $ciclista->fecha_fin_contrato = $request->fecha_fin_contrato;
-        $ciclista->estado_contrato = $request->estado_contrato;
-        $ciclista->estado = $request->estado;
-        $ciclista->save();
+        $usuarioGenerado = null;
 
-        return redirect()->route('ciclista.index')->with('success', 'Ciclista creado correctamente.');
+        DB::transaction(function () use ($request, &$usuarioGenerado) {
+            $ciclista = new Ciclista();
+            $ciclista->id_equipo             = $request->id_equipo;
+            $ciclista->id_nacionalidad       = $request->id_nacionalidad;
+            $ciclista->nombre                = $request->nombre;
+            $ciclista->fecha_nacimiento      = $request->fecha_nacimiento;
+            $ciclista->fecha_inicio_contrato = $request->fecha_inicio_contrato;
+            $ciclista->fecha_fin_contrato    = $request->fecha_fin_contrato;
+            $ciclista->estado_contrato       = $request->estado_contrato;
+            $ciclista->estado                = $request->estado;
+            $ciclista->save();
+
+            $usuarioGenerado = Str::slug($ciclista->nombre, '_') . '_' . $ciclista->id_ciclistas;
+
+            $usuario = new Usuario();
+            $usuario->usuario      = $usuarioGenerado;
+            $usuario->password     = Hash::make($request->password);
+            $usuario->tipo_usuario = 3;
+            $usuario->id_ciclista  = $ciclista->id_ciclistas;
+            $usuario->save();
+        });
+
+        return redirect()->route('ciclista.index')
+            ->with('success', 'Ciclista creado correctamente. Usuario de acceso: ' . $usuarioGenerado);
     }
 
     /* Muestra el detalle de un ciclista especifico */
@@ -109,14 +127,14 @@ class CiclistaController extends Controller
             return redirect()->route('ciclista.index')->with('error', 'Ciclista no encontrado.');
         }
 
-        $ciclista->id_equipo = $request->id_equipo;
-        $ciclista->id_nacionalidad = $request->id_nacionalidad;
-        $ciclista->nombre = $request->nombre;
-        $ciclista->fecha_nacimiento = $request->fecha_nacimiento;
+        $ciclista->id_equipo             = $request->id_equipo;
+        $ciclista->id_nacionalidad       = $request->id_nacionalidad;
+        $ciclista->nombre                = $request->nombre;
+        $ciclista->fecha_nacimiento      = $request->fecha_nacimiento;
         $ciclista->fecha_inicio_contrato = $request->fecha_inicio_contrato;
-        $ciclista->fecha_fin_contrato = $request->fecha_fin_contrato;
-        $ciclista->estado_contrato = $request->estado_contrato;
-        $ciclista->estado = $request->estado;
+        $ciclista->fecha_fin_contrato    = $request->fecha_fin_contrato;
+        $ciclista->estado_contrato       = $request->estado_contrato;
+        $ciclista->estado                = $request->estado;
         $ciclista->save();
 
         return redirect()->route('ciclista.index')->with('success', 'Ciclista actualizado correctamente.');
@@ -136,6 +154,4 @@ class CiclistaController extends Controller
 
         return redirect()->route('ciclista.index')->with('success', 'Ciclista inactivado correctamente.');
     }
-
-  
 }

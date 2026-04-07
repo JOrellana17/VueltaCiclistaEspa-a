@@ -7,6 +7,7 @@ use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\GanadorController;
 use App\Http\Controllers\ParticipaController;
 use App\Http\Controllers\PruebaController;
+use App\Http\Controllers\UsuarioController;
 
 /* Rutas de autenticacion, accesibles sin sesion activa */
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -48,6 +49,16 @@ Route::middleware('sesion')->group(function () {
         Route::resource('prueba', PruebaController::class);
         Route::resource('participa', ParticipaController::class);
         Route::patch('participa/{id}/estado', [ParticipaController::class, 'toggleEstado'])->name('participa.estado');
+    });
+
+    /* Listado de usuarios del sistema: solo admin y encargado */
+    Route::middleware('rol:0,1')->group(function () {
+        Route::get('usuario', [UsuarioController::class, 'index'])->name('usuario.index');
+    });
+
+    /* Modulo personal del usuario tipo ciclista: solo tipo 3 */
+    Route::middleware('rol:3')->group(function () {
+        Route::get('mis-pruebas', [UsuarioController::class, 'misPruebas'])->name('usuario.mis-pruebas');
     });
 
     /* Modulo de ganadores: listado para admin y ciclista, escritura solo admin */

@@ -15,7 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('usuario', 60)->unique();
             $table->string('password');
-            $table->unsignedTinyInteger('tipo_usuario')->comment('0=Administrador, 1=Encargado, 2=Ciclista');
+            $table->unsignedTinyInteger('tipo_usuario')->comment('0=Administrador, 1=Encargado, 2=Ciclista, 3=Usuario');
+            $table->unsignedBigInteger('id_ciclista')->nullable();
+            $table->foreign('id_ciclista')
+                ->references('id_ciclistas')
+                ->on('ciclistas')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamp('created_at')->useCurrent();
         });
 

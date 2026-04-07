@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 
 class Ciclista extends Model
@@ -29,6 +30,12 @@ class Ciclista extends Model
     public function nacionalidad(): BelongsTo
     {
         return $this->belongsTo(Nacionalidad::class, 'id_nacionalidad', 'id_nacionalidad');
+    }
+
+    /* Cuenta de acceso del ciclista al sistema */
+    public function usuario(): HasOne
+    {
+        return $this->hasOne(Usuario::class, 'id_ciclista', 'id_ciclistas');
     }
 
 }

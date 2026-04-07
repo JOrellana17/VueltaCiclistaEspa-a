@@ -41,6 +41,8 @@ class AuthController extends Controller
             'usuario_id'     => $usuario->id,
             'usuario_nombre' => $usuario->usuario,
             'tipo_usuario'   => (int) $usuario->tipo_usuario,
+            'id_ciclista'    => $usuario->id_ciclista,
+            'id_ciclista'    => $usuario->id_ciclista,
         ]);
 
         return redirect('/');

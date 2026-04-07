@@ -757,6 +757,17 @@ textarea {
     border-color: transparent;
 }
 
+.badge-campeon {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #d4a73a, #b87e1a);
+    color: #fff8f0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
 .acceso-denegado-section {
     display: grid;
     gap: 1.5rem;

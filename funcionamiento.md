@@ -206,6 +206,34 @@ Metodo `down()`:
 
 - Elimina la tabla `ganadores`.
 
+### 3.7 `2026_03_25_100000_create_usuarios_table.php`
+
+Tabla: `usuarios`
+
+Columnas:
+
+- `id`: clave primaria.
+- `usuario`: nombre de usuario unico.
+- `password`: contrasena cifrada con bcrypt.
+- `tipo_usuario`: tinyint. Valores: 0=Administrador, 1=Encargado, 2=Ciclista, 3=Usuario.
+- `id_ciclista`: FK nullable a `ciclistas.id_ciclistas`. Solo se rellena para tipo 3.
+
+Funcionamiento:
+
+- Centraliza las credenciales de acceso al sistema.
+- Tipos 0, 1 y 2 tienen `id_ciclista = null`.
+- El tipo 3 tiene `id_ciclista` apuntando al corredor que representa.
+- La migracion inserta tres usuarios iniciales (admin, encargado, ciclista demo) con `id_ciclista = null`.
+
+Metodo `up()`:
+
+- Crea la tabla con la FK nullable a `ciclistas`.
+- Inserta los tres usuarios base.
+
+Metodo `down()`:
+
+- Elimina la tabla `usuarios`.
+
 ## 4. Modelos
 
 ### 4.1 `App\Models\Nacionalidad`
@@ -291,6 +319,12 @@ Metodos:
 
 - Devuelve la nacionalidad del ciclista.
 
+#### `usuario(): HasOne`
+
+- Devuelve el usuario de sistema vinculado al ciclista.
+- Clave foranea: `id_ciclista` en `usuarios`, referenciando `id_ciclistas`.
+- Solo existira para ciclistas creados con el formulario tras la implementacion del tipo 3.
+
 ### 4.4 `App\Models\Prueba`
 
 Archivo: `app/Models/Prueba.php`
@@ -372,7 +406,30 @@ Metodos:
 
 - Devuelve el ciclista ganador.
 
-### 4.7 `App\Models\User`
+### 4.7 `App\Models\Usuario`
+
+Archivo: `app/Models/Usuario.php`
+
+Responsabilidad:
+
+- Modelo de autenticacion propio del sistema.
+- Gestiona credenciales, tipo de usuario y la vinculacion opcional con un ciclista.
+
+Atributos asignables:
+
+- `usuario`
+- `password`
+- `tipo_usuario`
+- `id_ciclista`
+
+Metodos:
+
+#### `ciclista(): BelongsTo`
+
+- Devuelve el ciclista vinculado al usuario.
+- Solo relevante para tipo 3.
+
+### 4.8 `App\Models\User`
 
 Archivo: `app/Models/User.php`
 
@@ -474,7 +531,7 @@ Metodos:
 
 #### `store(Request $request)`
 
-- Valida y crea un ciclista.
+- Valida y crea un ciclista junto con su usuario de acceso tipo 3.
 
 Validaciones:
 
@@ -486,6 +543,17 @@ Validaciones:
 - `fecha_fin_contrato`: requerido, date y debe ser mayor o igual que `fecha_inicio_contrato`.
 - `estado_contrato`: requerido, `activo` o `inactivo`.
 - `estado`: requerido, `activo` o `inactivo`.
+- `password`: requerido, string, minimo 8 caracteres, confirmado con `password_confirmation`.
+
+Toao el proceso de persistencia esta envuelto en un `DB::transaction()`:
+
+1. Se guarda el ciclista con `$ciclista->save()`.
+2. Se genera el nombre de usuario automaticamente: `Str::slug($ciclista->nombre, '_') . '_' . $ciclista->id_ciclistas` (por ejemplo: `juan_garcia_5`).
+3. Se crea el `Usuario` con `tipo_usuario = 3`, `id_ciclista = $ciclista->id_ciclistas` y la contrasena cifrada con `Hash::make()`.
+
+Si cualquier paso falla, toda la operacion se revierte.
+
+El mensaje de exito incluye el nombre de usuario generado para que el administrador se lo comunique al ciclista.
 
 Esta es la validacion que impide crear un ciclista sin equipo.
 
@@ -676,6 +744,57 @@ Persistencia:
 - Usa `Ganador::updateOrCreate(...)`.
 - Si la prueba ya tiene ganador, se actualiza.
 - Si no lo tiene, se crea.
+
+### 5.7 `App\Http\Controllers\AuthController`
+
+Archivo: `app/Http/Controllers/AuthController.php`
+
+Responsabilidad:
+
+- Gestionar el inicio y cierre de sesion del sistema.
+
+Metodos:
+
+#### `showLogin()`
+
+- Devuelve la vista `auth.login`.
+- Si ya hay sesion activa, redirige a `/`.
+
+#### `login(Request $request)`
+
+- Valida `usuario` y `password`.
+- Busca al usuario en `usuarios` por nombre de usuario.
+- Verifica la contrasena con `Hash::check()`.
+- Si es valido, guarda en sesion:
+  - `usuario_id`: id del registro.
+  - `usuario_nombre`: nombre de usuario.
+  - `tipo_usuario`: tipo numerico (0, 1, 2 o 3).
+  - `id_ciclista`: FK al ciclista vinculado, o `null` para tipos 0/1/2.
+- Redirige a `/`.
+- Si falla, redirige con error.
+
+#### `logout(Request $request)`
+
+- Invalida la sesion.
+- Redirige al login.
+
+### 5.8 `App\Http\Controllers\UsuarioController`
+
+Archivo: `app/Http/Controllers/UsuarioController.php`
+
+Responsabilidad:
+
+- Gestionar la pantalla personal del usuario tipo 3.
+
+Metodos:
+
+#### `misPruebas()`
+
+- Lee `session('id_ciclista')`. Si es null, redirige a `/`.
+- Carga el ciclista con sus relaciones: `equipo.participaciones.prueba`.
+- Carga los ganadores del ciclista: `Ganador::with('prueba')->where('id_ciclista', $ciclistaId)`.
+- Extrae los ids de pruebas ganadas como un array (`victoriaIds`).
+- Devuelve la vista `usuario.mis-pruebas` con las tres variables.
 
 ## 6. Providers, kernels y manejo del framework
 
@@ -920,6 +1039,45 @@ Funcionamiento:
 
 - Todas las rutas web siguen protegidas por CSRF, salvo las que se agreguen manualmente aqui.
 
+### 7.10 `VerificarSesion`
+
+Archivo: `app/Http/Middleware/VerificarSesion.php`
+
+Alias: `sesion` (registrado en `bootstrap/app.php`)
+
+Metodo:
+
+#### `handle(Request $request, Closure $next)`
+
+- Comprueba que exista `session('usuario_id')`.
+- Si no existe, redirige al login.
+- Si existe, deja pasar la peticion.
+
+Funcionamiento:
+
+- Se aplica como capa exterior a todas las rutas que requieren sesion activa.
+- Evita acceso directo a URLs protegidas sin autenticacion.
+
+### 7.11 `VerificarRol`
+
+Archivo: `app/Http/Middleware/VerificarRol.php`
+
+Alias: `rol` (registrado en `bootstrap/app.php`)
+
+Metodo:
+
+#### `handle(Request $request, Closure $next, string ...$roles)`
+
+- Lee `session('tipo_usuario')`.
+- Compara contra los roles permitidos pasados como argumentos.
+- Si el tipo de usuario no coincide con ninguno, devuelve una vista `acceso-denegado` con status 403.
+- Si coincide, deja pasar la peticion.
+
+Funcionamiento:
+
+- Es el control de acceso por rol del sistema.
+- Se usa en grupos de rutas como `middleware('rol:0,1')` o `middleware('rol:3')`.
+
 ## 8. Rutas y funciones/closures
 
 ### 8.1 `routes/web.php`
@@ -966,6 +1124,12 @@ Funciones y rutas:
 
 - Guarda o actualiza el ganador de una prueba.
 
+#### `Route::get('mis-pruebas', [UsuarioController::class, 'misPruebas'])`
+
+- Nombre: `usuario.mis-pruebas`.
+- Solo accesible con middleware `rol:3`.
+- Muestra la pantalla personal del ciclista autenticado como tipo 3.
+
 ### 8.2 `routes/api.php`
 
 Contiene una closure:
@@ -1002,6 +1166,15 @@ Responsabilidad:
 - Estructura comun de toda la aplicacion.
 - Renderiza barra superior, navegacion, panel de temporada, mensajes flash y contenido del modulo.
 
+Navegacion condicional por tipo de usuario:
+
+- `Inicio`: siempre visible.
+- `Ciclistas`: solo tipos 0 y 1.
+- `Equipos`: todos excepto tipo 3.
+- `Participaciones` y `Pruebas`: solo tipos 0 y 1.
+- `Ganadores`: solo tipos 0 y 2.
+- `Mis pruebas`: solo tipo 3.
+
 Elementos clave:
 
 - `@yield('title')`
@@ -1031,8 +1204,8 @@ Tambien muestra:
 ### 9.3 Vistas de `ciclista`
 
 - `ciclista/index.blade.php`: tabla de ciclistas con columnas personales y contractuales.
-- `ciclista/create.blade.php`: formulario de alta con equipo, nacionalidad y fechas del contrato.
-- `ciclista/edit.blade.php`: formulario de edicion con mismos campos.
+- `ciclista/create.blade.php`: formulario de alta con equipo, nacionalidad, fechas del contrato, y campos de contrasena y confirmacion para crear el usuario de acceso tipo 3.
+- `ciclista/edit.blade.php`: formulario de edicion con mismos campos (sin campos de contrasena).
 - `ciclista/show.blade.php`: ficha detallada del ciclista.
 
 ### 9.4 Vistas de `participa`
@@ -1054,9 +1227,26 @@ Tambien muestra:
 - `ganador/index.blade.php`: lista de ganadores registrados.
 - `ganador/create.blade.php`: formulario para seleccionar prueba, equipo y ciclista.
 
-### 9.7 Vistas generales
+### 9.7 `usuario/mis-pruebas.blade.php`
 
-- `index.blade.php`: portada principal con tarjetas de acceso a modulos.
+Responsabilidad:
+
+- Pantalla personal exclusiva del tipo 3.
+- Muestra las pruebas en las que ha participado el equipo del ciclista autenticado.
+
+Contenido:
+
+- Tabla con columnas: Prueba, Edicion, Etapas, Km totales, Estado prueba, Resultado.
+- La columna Resultado muestra un badge dorado "Campeon" si `$participa->prueba->id` esta en `$victoriaIds`.
+- Si el equipo no tiene participaciones, muestra un estado vacio.
+
+### 9.8 Vistas generales
+
+- `index.blade.php`: portada principal con tarjetas de acceso a modulos segun tipo de usuario:
+  - Tipo 0 (admin): todas las tarjetas.
+  - Tipo 1 (encargado): Equipos, Ciclistas, Participaciones, Pruebas.
+  - Tipo 2 (ciclista): Equipos, Ganadores (lectura).
+  - Tipo 3 (usuario): solo tarjeta "Mis pruebas y resultados".
 
 ## 10. Funciones Javascript y frontend
 
@@ -1219,6 +1409,22 @@ Funcionamiento:
 - En vez de `delete()`, se cambia el campo `estado`.
 - Esto conserva el historial del registro.
 
+### 11.8 Creacion atomica de ciclista y usuario tipo 3
+
+Se aplica en `CiclistaController::store()`.
+
+Flujo:
+
+1. Se valida la contrasena (`required|min:8|confirmed`).
+2. Se ejecuta `DB::transaction()`.
+3. Dentro: `$ciclista->save()`, generacion del username, `Usuario::create(tipo_usuario=3, id_ciclista=...)`.
+4. Si cualquier paso lanza excepcion, la transaccion se revierte completa.
+
+Consecuencia:
+
+- No puede existir un ciclista sin usuario de sistema ni viceversa.
+- El username es unico por construccion: incluye el PK del ciclista como sufijo.
+
 ## 12. Relaciones entre modulos
 
 Dependencias principales:
@@ -1231,12 +1437,14 @@ Dependencias principales:
 - `Prueba` -> `Ganador`
 - `Equipo` -> `Ganador`
 - `Ciclista` -> `Ganador`
+- `Ciclista` -> `Usuario` (tipo 3)
 
 Implicaciones de negocio:
 
 - Para crear un ciclista, primero debe existir un equipo y una nacionalidad.
 - Para crear una participacion, primero debe existir un equipo activo y una prueba activa.
 - Para asignar un ganador, primero deben existir una prueba activa, un equipo activo y un ciclista activo de ese equipo.
+- Al crear un ciclista siempre se crea tambien su usuario de acceso tipo 3 de forma atomica.
 
 ## 13. Estado actual y notas tecnicas
 
@@ -1250,18 +1458,30 @@ Los modulos activos y funcionales del sistema son:
 - Pruebas
 - Ganadores
 - Nacionalidades
+- Usuarios (autenticacion y control de acceso)
+- Mis pruebas (modulo personal tipo 3)
 
 ### 13.2 Elementos fuera del flujo principal
 
 Tras la limpieza realizada, no quedan modulos ni vistas residuales documentadas dentro del proyecto activo.
 
-### 13.3 Resumen final del flujo de negocio
+### 13.3 Tipos de usuario
+
+| tipo_usuario | Nombre | Descripcion |
+|---|---|---|
+| 0 | Administrador | Acceso total a todos los modulos |
+| 1 | Encargado | Acceso a equipos, ciclistas, participaciones y pruebas |
+| 2 | Ciclista | Acceso de lectura a equipos y ganadores |
+| 3 | Usuario | Acceso exclusivo a su pantalla personal de mis pruebas |
+
+### 13.4 Resumen final del flujo de negocio
 
 1. Se crean nacionalidades.
 2. Se crean equipos asociados a una nacionalidad.
-3. Se crean ciclistas asociados a un equipo activo, con nacionalidad y datos de contrato.
+3. Se crean ciclistas asociados a un equipo activo, con nacionalidad y datos de contrato. Al guardar, se crea automaticamente un usuario tipo 3 vinculado al ciclista.
 4. Se crean pruebas.
 5. Se registran participaciones de equipos activos en pruebas activas.
 6. Se asigna un ganador eligiendo una prueba activa, un equipo activo y un ciclista activo perteneciente a ese equipo.
+7. El usuario tipo 3 puede acceder con su nombre de usuario generado y ver las pruebas de su equipo y si figura como ganador.
 
 Con esto, el sistema asegura consistencia basica de negocio desde formulario, controlador, Eloquent y base de datos.

@@ -20,19 +20,29 @@
             <nav class="site-nav">
                 <a class="nav-chip {{ request()->path() === '/' ? 'is-active' : '' }}" href="{{ url('/') }}">Inicio</a>
 
-                @if ((int) session('tipo_usuario') !== 2)
+                @if (in_array((int) session('tipo_usuario'), [0, 1], true))
                     <a class="nav-chip {{ request()->routeIs('ciclista.*') ? 'is-active' : '' }}" href="{{ route('ciclista.index') }}">Ciclistas</a>
                 @endif
 
-                <a class="nav-chip {{ request()->routeIs('equipo.*') ? 'is-active' : '' }}" href="{{ route('equipo.index') }}">Equipos</a>
+                @if (in_array((int) session('tipo_usuario'), [0, 1], true))
+                    <a class="nav-chip {{ request()->routeIs('usuario.index') ? 'is-active' : '' }}" href="{{ route('usuario.index') }}">Usuarios</a>
+                @endif
 
-                @if ((int) session('tipo_usuario') !== 2)
+                @if ((int) session('tipo_usuario') !== 3)
+                    <a class="nav-chip {{ request()->routeIs('equipo.*') ? 'is-active' : '' }}" href="{{ route('equipo.index') }}">Equipos</a>
+                @endif
+
+                @if (in_array((int) session('tipo_usuario'), [0, 1], true))
                     <a class="nav-chip {{ request()->routeIs('participa.*') ? 'is-active' : '' }}" href="{{ route('participa.index') }}">Participaciones</a>
                     <a class="nav-chip {{ request()->routeIs('prueba.*') ? 'is-active' : '' }}" href="{{ route('prueba.index') }}">Pruebas</a>
                 @endif
 
                 @if (in_array((int) session('tipo_usuario'), [0, 2], true))
                     <a class="nav-chip {{ request()->routeIs('ganador.*') ? 'is-active' : '' }}" href="{{ route('ganador.index') }}">Ganadores</a>
+                @endif
+
+                @if ((int) session('tipo_usuario') === 3)
+                    <a class="nav-chip {{ request()->routeIs('usuario.*') ? 'is-active' : '' }}" href="{{ route('usuario.mis-pruebas') }}">Mis pruebas</a>
                 @endif
             </nav>
 
