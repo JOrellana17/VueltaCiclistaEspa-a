@@ -26,7 +26,7 @@
                     <strong>{{ $participa->fecha_inicio }}</strong>
                 </div>
                 <div class="detail-item">
-                    <span>Fin de contrato</span>
+                    <span>Fecha final</span>
                     <strong>{{ $participa->fin_contrato }}</strong>
                 </div>
                 <div class="detail-item">

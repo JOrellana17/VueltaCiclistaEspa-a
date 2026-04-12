@@ -52,7 +52,7 @@
             </div>
 
             <div class="field">
-                <label for="fin_contrato">Fin de contrato</label>
+                <label for="fin_contrato">Fecha final</label>
                 <input class="input-control" id="fin_contrato" type="date" name="fin_contrato" value="{{ old('fin_contrato', $participa->fin_contrato) }}" required>
             </div>
 

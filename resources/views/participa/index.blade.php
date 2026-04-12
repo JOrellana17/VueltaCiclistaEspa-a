@@ -22,7 +22,7 @@
                         <th>Equipo</th>
                         <th>Prueba</th>
                         <th>Fecha de inicio</th>
-                        <th>Fin de contrato</th>
+                        <th>Fecha final</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
